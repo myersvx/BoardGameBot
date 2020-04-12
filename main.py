@@ -1,3 +1,5 @@
+#Vinny Version 0.5.7.5
+
 # Work with Python 3.6
 import asyncio
 import datetime
@@ -5,22 +7,27 @@ import logging
 import os
 import random
 import typing
+import logging
 
 import discord.ext.commands
 import Python.BGG
 import Python.data_storage
 import Python.Dice
 import Python.YouTube
-import sentry_sdk
+
 import util.database_initialization
 from util.config import TOKEN
-from util.config import sentry_url
-
+#from util.config import DEVELOPER_KEY
 
 # if not os.path.isfile('boardgamebot.db'):
 #     util.database_initialization.intitialize_db()
 
 # sentry_sdk.init(sentry_url)
+
+logging.basicConfig(filename='example2.log',level=logging.DEBUG)
+logging.debug('This message should go to the log file')
+logging.info('So should this')
+logging.warning('And this, too')
 
 logger = logging.Logger('catch_all')
 
@@ -187,24 +194,24 @@ async def get_hot_companies_error(ctx, error):
 
 
 
-@client.command(name='AskQuestion',
-                description="Returns a search of Stack Exchange similar questions",
-                brief="Returns a search of Stack Exchange similar questions",
-                aliases=['ask', 'ASK', 'question']
-                )
-async def ask(ctx, *, arg):
-    user_input = arg.split(',')
-    game = user_input[0]
-    question = user_input[1]
-    response = Python.BGG.search_stackexchange(game, question)
-    await ctx.send(response)
+# @client.command(name='AskQuestion',
+                # description="Returns a search of Stack Exchange similar questions",
+                # brief="Returns a search of Stack Exchange similar questions",
+                # aliases=['ask', 'ASK', 'question']
+                # )
+# async def ask(ctx, *, arg):
+    # user_input = arg.split(',')
+    # game = user_input[0]
+    # question = user_input[1]
+    # response = Python.BGG.search_stackexchange(game, question)
+    # await ctx.send(response)
 
-@ask.error
-async def ask_error(ctx, error):
-    if isinstance(error, BaseException):
-        await ctx.send('Unexpected error, try again. If the error persists,'
-                       ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)      
+# @ask.error
+# async def ask_error(ctx, error):
+    # if isinstance(error, BaseException):
+        # await ctx.send('Unexpected error, try again. If the error persists,'
+                       # ' get help here https://discord.gg/9pS2JdC')
+        # logger.error(error, exc_info=True)      
 
 
 @client.command(name='Lookup_BGG_User',
