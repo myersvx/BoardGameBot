@@ -1,6 +1,7 @@
+setuptools==40.3.0
 discord.py==1.2.5
-boardgamegeek2==1.0.1
-google-api-python-client==1.7.8
+git+git://github.com/myersvx/dependency-bgg.git
+google-api-python-client==1.8.0
 python-dotenv==0.10.1
 dnspython==1.16.0
 youtube_dl==2019.3.18

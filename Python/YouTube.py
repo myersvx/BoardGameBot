@@ -2,7 +2,8 @@ import os
 import json
 
 from googleapiclient.discovery import build
-from util.config import DEVELOPER_KEY
+from util.config import GOOGLE_APPLICATION_CREDENTIALS
+
 
 
 YOUTUBE_BASE_VIDEO_URL = 'https://www.youtube.com/watch?v='
@@ -14,7 +15,7 @@ vidNum = 2
 
 
 def how_to_play(string):
-    youtubeAPI = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
+    youtubeAPI = build('youtube', 'v3', developerKey=GOOGLE_APPLICATION_CREDENTIALS)
     response = youtubeAPI.search().list(
         q='how to play ' + string,
         part='id,snippet',
@@ -36,7 +37,7 @@ def how_to_play(string):
     return(YOUTUBE_BASE_VIDEO_URL + video_id)
 
 def game_ambiance(string):
-    youtubeAPI = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
+    youtubeAPI = build('youtube', 'v3', developerKey=GOOGLE_APPLICATION_CREDENTIALS)
     response = youtubeAPI.search().list(
         q=string + ' ambiance music',
         part='id,snippet',
@@ -71,7 +72,7 @@ def search_next_video():
     else:
         return "No recently played video found."
 
-    youtubeAPI = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
+    youtubeAPI = build('youtube', 'v3', developerKey=GOOGLE_APPLICATION_CREDENTIALS)
     response = youtubeAPI.search().list(
         q=qType,
         part = 'id, snippet',
