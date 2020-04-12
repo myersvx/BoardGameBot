@@ -13,25 +13,14 @@ def make_game_url (bgg_game):
     bgg_id = bgg_game.id
     link_url = "http://boardgamegeek.com/" + urllib.parse.quote("{}/{}".format(bgg_type, bgg_id))
     link_name = bgg_game.name
-    return link_url
+    return "{} {}".format(link_name, link_url)
 
 
 def game_lookup(string):
-    '''Return description_text, title, image, url'''
-    need_retry = False
     try:
-        game = bgg.game(string, choose="first", exact=True)
-    except boardgamegeek.BGGItemNotFoundError:
-        need_retry = True
+        game = bgg.game(string,choose="first")
     except Exception as e:
-        return("Unknown exception: "+str(e), "", "", "")
-    if need_retry:
-        try:
-            game = bgg.game(string, choose="first", exact=False)
-        except boardgamegeek.BGGItemNotFoundError:
-            return("Game not found: {}".format(string), "", "", "")
-        except Exception as e:
-            return("Unknown exception: "+str(e), "", "", "")
+            return( "Game not found, are you sure that's the correct title? Check for any possible errors.\n" + str(e))    
     heart_count = int(game.rating_average)
     heart_emoji = '\U00002665'
     sad_heart_emoji = '\U00002661'
@@ -42,29 +31,28 @@ def game_lookup(string):
         else:
             heart_string += heart_emoji
     heart_string += " (" + str(int(game.rating_average)) + " / 10)"
-    gameid = str(game.id)
+    
+    link = make_game_url(game)
     description = str(game.description.strip()[0:1000] + "...")
     gamerank = str(game.boardgame_rank)
     categories = game.categories
     number_of_players = str(game.min_players) + "-" + str(game.max_players)
     weight = str( round(game.rating_average_weight,2))
     categories_list = ', '.join(categories)
-    description_text =('BoardGameGeek Id: ' +gameid
-            + "\nGame Rating for " + str(string).capitalize() + " is: " + heart_string
-            + "\nBoardGameGeek Rank: " + gamerank
-            + "\nNumber of players: " + number_of_players
-            + "\nCategories: " + categories_list
-            + "\nComplexity Rank: " + weight + '/5'
-            + "\nExpected game length: " +str(game.min_playing_time) + ' - ' + str(game.max_playing_time) + " minutes"
-            + "\n\nDescription: " + description);
-    return(description_text, game.name, str(game.image), make_game_url(game))
+    return (link +"\nGame Rating for " + str(string) + " is: " + heart_string 
+            + "\nBoardGameGeek Rank: " + gamerank 
+            + "\nNumber of players: " +number_of_players 
+            + "\nCategories: " +categories_list 
+            + "\nComplexity Rank: " + weight + '/5' 
+            + "\nExpected game length: " +str(game.min_playing_time) + ' - ' + str(game.max_playing_time) +" Minutes" 
+            + "\n\nDescription: " + description) 
 
-# def image_lookup(string):
-    # try:
-        # game = bgg.game(string,choose="first")
-    # except Exception as e:
-        # return( "error") 
-    # return(str(game.image))
+def image_lookup(string):
+    try:
+        game = bgg.game(string,choose="best-rank")
+    except Exception as e:
+        return( "error") 
+    return(str(game.image))
 
 def game_expansion(string):
     try:

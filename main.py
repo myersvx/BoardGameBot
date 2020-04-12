@@ -1,3 +1,5 @@
+#Vinny Version 0.5.7.5
+
 # Work with Python 3.6
 import asyncio
 import datetime
@@ -22,12 +24,14 @@ from util.config import TOKEN
 
 # sentry_sdk.init(sentry_url)
 
-lf=open("log.txt", mode='w', encoding='utf_8')
-logging.basicConfig(stream=lf, level=logging.DEBUG)
+logging.basicConfig(filename='example2.log',level=logging.DEBUG)
+logging.debug('This message should go to the log file')
+logging.info('So should this')
+logging.warning('And this, too')
 
 logger = logging.Logger('catch_all')
 
-Bot_Prefix = (".")
+Bot_Prefix = ("?", "!")
 
 players = {}
 
@@ -40,20 +44,15 @@ client = discord.ext.commands.Bot(command_prefix=Bot_Prefix)
                 aliases=['bggck', 'bglookup', 'bg']
                 )
 async def bgg_check(ctx, *, gamename):
-    (main_response, title_text, image_url, link_url) = Python.BGG.game_lookup(gamename)
-    if title_text:
-        game_embed = discord.Embed()
-        game_embed.title = title_text
-        if image_url:
-            game_embed.set_image(url=image_url)
-        if link_url:
-            game_embed.url = link_url
-        game_embed.colour = discord.Colour.from_rgb(255, 0, 96)
-        game_embed.description = main_response
-        await ctx.send(embed=game_embed)
-    else:
-        # there was an error
+    main_response = Python.BGG.game_lookup(gamename)
+    filepath = Python.BGG.image_lookup(gamename)
+    embed = discord.Embed()
+    if  "error" not in filepath:
+        embed.set_image(url=filepath)
+    if filepath == "error":
         await ctx.send(main_response)
+        return
+    await ctx.send(main_response,embed=embed)
 
 @bgg_check.error
 async def bgg_check_error(ctx, error):
@@ -67,7 +66,7 @@ async def bgg_check_error(ctx, error):
                 description="Returns expansions for the selected game if any",
                 brief="Returns expansions of a game",
                 aliases=['exp', 'expchk', 'expansion']
-                )
+                ) 
 async def expansion_check(ctx, *, game):
     main_response = Python.BGG.game_expansion(game)
     await ctx.send(main_response)
@@ -77,7 +76,7 @@ async def expansion_check_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)    
 
 
 @client.command(name='Random_Game',
@@ -94,7 +93,7 @@ async def random_game_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)    
 
 
 @client.command(name='Random_Owned_Game',
@@ -113,7 +112,7 @@ async def random_users_game_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)    
 
 @client.command(name='What_Game_Can_We_Play',
                 description="Looks up a user's collection and how many people are playing to see what games you could play",
@@ -132,7 +131,8 @@ async def what_game_can_we_play_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)        
+
 
 @client.command(name='HowToPlay',
                 description="Returns the top search result video from YouTube \
@@ -149,7 +149,9 @@ async def youtube_how_to_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)        
+
+
 
 @client.command()
 async def schedule(ctx):
@@ -171,7 +173,7 @@ async def get_hot_games_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)      
 
 
 @client.command(name='GetHotCompanies',
@@ -188,7 +190,9 @@ async def get_hot_companies_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)      
+
+
 
 # @client.command(name='AskQuestion',
                 # description="Returns a search of Stack Exchange similar questions",
@@ -209,6 +213,7 @@ async def get_hot_companies_error(ctx, error):
                        # ' get help here https://discord.gg/9pS2JdC')
         # logger.error(error, exc_info=True)      
 
+
 @client.command(name='Lookup_BGG_User',
                 description='Lookup BGG user',
                 brief="lookup bgg user",
@@ -218,13 +223,13 @@ async def lookup_bgg_user(ctx, name):
     response = Python.BGG.user_lookup(name)
     await ctx.send("Games that " + name + " owns: \n\n" + response)
         
+
 @lookup_bgg_user.error
 async def lookup_bgg_user_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        ctx.send('too many games to list')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)              
 
 @client.command(name="Dice_Roll",
                 description="Returns the value of a dice roll number is specified by command",
@@ -233,14 +238,14 @@ async def lookup_bgg_user_error(ctx, error):
                 )
 async def dice_roll(ctx, sides):
     dice_roll = Python.Dice.dice(int(sides))
-    await ctx.send("The " + str(sides) + " sided die resulted in: " + str(dice_roll))
+    await ctx.send("The " + str(sides) + " sided die resulted in: " + str(dice_roll))  
 
 @dice_roll.error
 async def dice_roll_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)                
 
 
 @client.command(name='Game_Ambiance',
@@ -258,7 +263,7 @@ async def game_ambiance_playlist_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)                            
 
 
 @client.command(name='Next_Video',
@@ -275,7 +280,8 @@ async def next_video_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)
+        logger.error(error, exc_info=True)      
+
 
 @client.event
 async def on_ready():
@@ -289,6 +295,7 @@ async def list_servers():
             print(guild.name)
         await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("matta174")))
         await asyncio.sleep(600)
+        
 
 
 client.loop.create_task(list_servers())
