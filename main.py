@@ -24,10 +24,8 @@ from util.config import TOKEN
 
 # sentry_sdk.init(sentry_url)
 
-logging.basicConfig(filename='example2.log',level=logging.DEBUG)
-logging.debug('This message should go to the log file')
-logging.info('So should this')
-logging.warning('And this, too')
+lf=open("example.log", mode='w', encoding='utf_8') 
+logging.basicConfig(stream=lf, level=logging.DEBUG)
 
 logger = logging.Logger('catch_all')
 
@@ -44,15 +42,20 @@ client = discord.ext.commands.Bot(command_prefix=Bot_Prefix)
                 aliases=['bggck', 'bglookup', 'bg']
                 )
 async def bgg_check(ctx, *, gamename):
-    main_response = Python.BGG.game_lookup(gamename)
-    filepath = Python.BGG.image_lookup(gamename)
-    embed = discord.Embed()
-    if  "error" not in filepath:
-        embed.set_image(url=filepath)
-    if filepath == "error":
+    (main_response, title_text, image_url, link_url) = Python.BGG.game_lookup(gamename)
+    if title_text:       
+        game_embed = discord.Embed()        
+        game_embed.title = title_text
+        if image_url:
+            game_embed.set_image(url=image_url)
+        if link_url:
+            game_embed.url = link_url
+        game_embed.colour = discord.Colour.from_rgb(255, 0, 96)
+        game_embed.description = main_response
+        await ctx.send(embed=game_embed)
+    else:
+        # there was an error
         await ctx.send(main_response)
-        return
-    await ctx.send(main_response,embed=embed)
 
 @bgg_check.error
 async def bgg_check_error(ctx, error):
