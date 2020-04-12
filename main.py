@@ -1,4 +1,4 @@
-#Vinny Version 0.5.7.5
+#Vinny Version 0.5.7.6
 
 # Work with Python 3.6
 import asyncio
