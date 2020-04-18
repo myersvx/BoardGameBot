@@ -1,5 +1,3 @@
-#Vinny Version 0.5.7.5
-
 # Work with Python 3.6
 import asyncio
 import datetime
