@@ -42,15 +42,15 @@ def game_lookup(string):
         else:
             heart_string += heart_emoji
     heart_string += " (" + str(int(game.rating_average)) + " / 10)"
-
-    # link = make_game_url(game)
+    gameid = str(game.id)
     description = str(game.description.strip()[0:1000] + "...")
     gamerank = str(game.boardgame_rank)
     categories = game.categories
     number_of_players = str(game.min_players) + "-" + str(game.max_players)
     weight = str( round(game.rating_average_weight,2))
     categories_list = ', '.join(categories)
-    description_text =("Game Rating for " + str(string) + " is: " + heart_string
+    description_text =('BoardGameGeek Id: ' +gameid
+            + "\nGame Rating for " + str(string).capitalize() + " is: " + heart_string
             + "\nBoardGameGeek Rank: " + gamerank
             + "\nNumber of players: " + number_of_players
             + "\nCategories: " + categories_list
