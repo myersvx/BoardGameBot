@@ -1,6 +1,3 @@
-#Vinny Version 0.5.7.8
-# git push force update
-
 # Work with Python 3.6
 import asyncio
 import datetime
@@ -25,12 +22,12 @@ from util.config import TOKEN
 
 # sentry_sdk.init(sentry_url)
 
-lf=open("examplelog.txt", mode='w', encoding='utf_8')
+lf=open("log.txt", mode='w', encoding='utf_8')
 logging.basicConfig(stream=lf, level=logging.DEBUG)
 
 logger = logging.Logger('catch_all')
 
-Bot_Prefix = ("?", "!")
+Bot_Prefix = (".")
 
 players = {}
 
@@ -137,7 +134,6 @@ async def what_game_can_we_play_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-
 @client.command(name='HowToPlay',
                 description="Returns the top search result video from YouTube \
                     on how to play",
@@ -154,8 +150,6 @@ async def youtube_how_to_error(ctx, error):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
-
-
 
 @client.command()
 async def schedule(ctx):
@@ -196,8 +190,6 @@ async def get_hot_companies_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-
-
 # @client.command(name='AskQuestion',
                 # description="Returns a search of Stack Exchange similar questions",
                 # brief="Returns a search of Stack Exchange similar questions",
@@ -215,8 +207,7 @@ async def get_hot_companies_error(ctx, error):
     # if isinstance(error, BaseException):
         # await ctx.send('Unexpected error, try again. If the error persists,'
                        # ' get help here https://discord.gg/9pS2JdC')
-        # logger.error(error, exc_info=True)
-
+        # logger.error(error, exc_info=True)      
 
 @client.command(name='Lookup_BGG_User',
                 description='Lookup BGG user',
@@ -226,13 +217,13 @@ async def get_hot_companies_error(ctx, error):
 async def lookup_bgg_user(ctx, name):
     response = Python.BGG.user_lookup(name)
     await ctx.send("Games that " + name + " owns: \n\n" + response)
-
-
+        
 @lookup_bgg_user.error
 async def lookup_bgg_user_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
+        ctx.send('too many games to list')
         logger.error(error, exc_info=True)
 
 @client.command(name="Dice_Roll",
@@ -286,7 +277,6 @@ async def next_video_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-
 @client.event
 async def on_ready():
     print('Ready!')
@@ -299,7 +289,6 @@ async def list_servers():
             print(guild.name)
         await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("matta174")))
         await asyncio.sleep(600)
-
 
 
 client.loop.create_task(list_servers())
