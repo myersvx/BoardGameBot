@@ -31,7 +31,7 @@ logging.warning('And this, too')
 
 logger = logging.Logger('catch_all')
 
-Bot_Prefix = ("?", "!")
+Bot_Prefix = (".")
 
 players = {}
 
@@ -229,7 +229,8 @@ async def lookup_bgg_user_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        logger.error(error, exc_info=True)              
+        ctx.send('too many games to list')
+        logger.error(error, exc_info=True)
 
 @client.command(name="Dice_Roll",
                 description="Returns the value of a dice roll number is specified by command",
