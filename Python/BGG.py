@@ -89,6 +89,9 @@ def user_lookup(name):
     for item in user.items:
         if item.owned:
             games_string = games_string + item.name + '\n'
+    #if len(games_string)>1500:
+        #return("Game list is to long to display.")
+    #else:
     return(games_string)
 
 
@@ -114,7 +117,10 @@ def what_games_can_we_play(name, numberofplayers = 1):
                 if item.owned:
                         if numberofplayers >= item.min_players and numberofplayers <= item.max_players:
                                 gamesString =  gamesString + item.name + ' - Average Playtime:  ' + str(item.playing_time) + ' minutes ' + '\n\n'
-        return("With "+ str(numberofplayers) + " players you can play these games from " + name + "'s collection \n\n" + gamesString)
+        if len(gamesString)>1500:
+            return("List of games is to long to display")
+        else:
+            return("With "+ str(numberofplayers) + " players you can play these games from " + name + "'s collection \n\n" + gamesString)
 
 
 def hot_games():

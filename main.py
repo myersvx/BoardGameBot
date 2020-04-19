@@ -216,14 +216,20 @@ async def get_hot_companies_error(ctx, error):
                 )
 async def lookup_bgg_user(ctx, name):
     response = Python.BGG.user_lookup(name)
-    await ctx.send("Games that " + name + " owns: \n\n" + response)
-        
+    start = 0
+    await ctx.send("Games that " + str(name).capitalize() + " owns: \n\n")
+    for pos in range(0,len(response), 1500):
+        for le in range(pos, pos+1500):
+            i = response.find("\n", le)
+            list = response[start:i]
+        start = i+1
+        await ctx.send(list)
+
 @lookup_bgg_user.error
 async def lookup_bgg_user_error(ctx, error):
     if isinstance(error, BaseException):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
-        ctx.send('too many games to list')
         logger.error(error, exc_info=True)
 
 @client.command(name="Dice_Roll",
@@ -287,7 +293,7 @@ async def list_servers():
         print("Current servers:")
         for guild in client.guilds:
             print(guild.name)
-        await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("matta174")))
+        await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("myersvx")))
         await asyncio.sleep(600)
 
 
