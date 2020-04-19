@@ -80,6 +80,15 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -97,9 +106,9 @@ celerybeat-schedule
 .vscode/
 
 #Secrets
-#boardgamebot.env
-#keys.json
-#cdutil/config.py
+boardgamebot.env
+keys.json
+cdutil/config.py
 
 #SQLite Database
 boardgamebot.db
