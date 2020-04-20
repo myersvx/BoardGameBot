@@ -124,7 +124,6 @@ async def what_game_can_we_play(ctx, *, arg):
     user_input = arg.split(' ')
     name = user_input[0]
     number_of_players = int(user_input[1])
-
     games_we_can_play = Python.BGG.what_games_can_we_play(name, number_of_players)
     start = 0
     for pos in range(0, len(games_we_can_play), 1500):
