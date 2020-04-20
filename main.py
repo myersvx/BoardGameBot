@@ -12,7 +12,6 @@ import Python.BGG
 import Python.data_storage
 import Python.Dice
 import Python.YouTube
-
 import util.database_initialization
 from util.config import TOKEN
 #from util.config import DEVELOPER_KEY
@@ -32,6 +31,7 @@ Bot_Prefix = (".")
 players = {}
 
 client = discord.ext.commands.Bot(command_prefix=Bot_Prefix)
+client.remove_command('help')
 
 
 @client.command(name='BGGCheck',
@@ -121,11 +121,17 @@ async def random_users_game_error(ctx, error):
                 aliases=['wgcwp', 'wcwp', 'whatcanweplay']
                 )
 async def what_game_can_we_play(ctx, *, arg):
-    user_input = arg.split(',')
+    user_input = arg.split(' ')
     name = user_input[0]
     number_of_players = int(user_input[1])
     games_we_can_play = Python.BGG.what_games_can_we_play(name, number_of_players)
-    await ctx.send(games_we_can_play)
+    start = 0
+    for pos in range(0, len(games_we_can_play), 1500):
+        for le in range(pos, pos + 1500):
+            i = games_we_can_play.find("\n", le)
+            list = games_we_can_play[start:i]
+        start = i + 1
+        await ctx.send(list)   # + '\n' +str(i) + '\n' +str(start)
 
 @what_game_can_we_play.error
 async def what_game_can_we_play_error(ctx, error):
@@ -135,8 +141,7 @@ async def what_game_can_we_play_error(ctx, error):
         logger.error(error, exc_info=True)
 
 @client.command(name='HowToPlay',
-                description="Returns the top search result video from YouTube \
-                    on how to play",
+                description="Returns the top search result video from YouTube on how to play",
                 brief="How to play video",
                 aliases=['htp', 'how', 'video']
                 )
@@ -207,7 +212,7 @@ async def get_hot_companies_error(ctx, error):
     # if isinstance(error, BaseException):
         # await ctx.send('Unexpected error, try again. If the error persists,'
                        # ' get help here https://discord.gg/9pS2JdC')
-        # logger.error(error, exc_info=True)      
+        # logger.error(error, exc_info=True)
 
 @client.command(name='Lookup_BGG_User',
                 description='Lookup BGG user',
@@ -266,7 +271,6 @@ async def game_ambiance_playlist_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-
 @client.command(name='Next_Video',
                 description="Returns the next video in the last youtube search",
                 brief="Return next video",
@@ -283,6 +287,18 @@ async def next_video_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
+@client.command(name='help',
+                description='Bot purpose, and list of commands',
+                brief='Help',
+                aliases=['hlp', 'H', '?']
+                )
+async def help(ctx):
+    helpfile = discord.Embed(title="Marvin",
+                              description="The Depressed Robot"
+                                          "\n Here is a list of things I can do, but I wont be happy about:",
+                              color=0x6300D2)
+    helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
+    await ctx.send(embed=helpfile)
 @client.event
 async def on_ready():
     print('Ready!')
@@ -295,6 +311,8 @@ async def list_servers():
             print(guild.name)
         await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("myersvx")))
         await asyncio.sleep(600)
+
+
 
 
 client.loop.create_task(list_servers())
