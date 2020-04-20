@@ -213,7 +213,7 @@ async def get_hot_companies_error(ctx, error):
     # if isinstance(error, BaseException):
         # await ctx.send('Unexpected error, try again. If the error persists,'
                        # ' get help here https://discord.gg/9pS2JdC')
-        # logger.error(error, exc_info=True)      
+        # logger.error(error, exc_info=True)
 
 @client.command(name='Lookup_BGG_User',
                 description='Lookup BGG user',
