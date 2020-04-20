@@ -3,7 +3,6 @@ import random
 import urllib.parse 
 
 
-
 bgg = boardgamegeek.BGGClient()
 def make_game_url (bgg_game):
     try:
@@ -14,7 +13,6 @@ def make_game_url (bgg_game):
     link_url = "http://boardgamegeek.com/" + urllib.parse.quote("{}/{}".format(bgg_type, bgg_id))
     link_name = bgg_game.name
     return link_url
-
 
 def game_lookup(string):
     '''Return description_text, title, image, url'''
@@ -59,13 +57,6 @@ def game_lookup(string):
             + "\n\nDescription: " + description);
     return(description_text, game.name, str(game.image), make_game_url(game))
 
-# def image_lookup(string):
-    # try:
-        # game = bgg.game(string,choose="first")
-    # except Exception as e:
-        # return( "error") 
-    # return(str(game.image))
-
 def game_expansion(string):
     try:
         game = bgg.game(string)
@@ -79,7 +70,6 @@ def game_expansion(string):
         returned_string = returned_string + item.name + '\n'
     return returned_string
 
-
 def user_lookup(name):
     try:
         user = bgg.collection(name)
@@ -89,11 +79,7 @@ def user_lookup(name):
     for item in user.items:
         if item.owned:
             games_string = games_string + item.name + '\n'
-    #if len(games_string)>1500:
-        #return("Game list is to long to display.")
-    #else:
     return(games_string)
-
 
 def random_owned_game(name):
         try:
@@ -117,11 +103,7 @@ def what_games_can_we_play(name, numberofplayers = 1):
                 if item.owned:
                         if numberofplayers >= item.min_players and numberofplayers <= item.max_players:
                                 gamesString =  gamesString + item.name + ' - Average Playtime:  ' + str(item.playing_time) + ' minutes ' + '\n\n'
-        if len(gamesString)>1500:
-            return("List of games is to long to display")
-        else:
-            return("With "+ str(numberofplayers) + " players you can play these games from " + name + "'s collection \n\n" + gamesString)
-
+        return("With "+ str(numberofplayers) + " players you can play these games from " + str(name).capitalize() + "'s collection \n\n" + gamesString)
 
 def hot_games():
         hot_games_list = bgg.hot_items('boardgame')
@@ -136,4 +118,3 @@ def hot_companies():
         for item in hot_companies_list:
                 returned_string = returned_string + item.name + '\n'
         return returned_string
-
