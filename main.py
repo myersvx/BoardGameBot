@@ -299,6 +299,8 @@ async def help(ctx):
                               color=0x6300D2)
     helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
     await ctx.send(embed=helpfile)
+
+
 @client.event
 async def on_ready():
     print('Ready!')
