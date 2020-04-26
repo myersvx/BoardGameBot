@@ -1,13 +1,13 @@
 # Work with Python 3.6
 import asyncio
 import datetime
-import logging
 import os
 import random
 import typing
 import logging
 
 import discord.ext.commands
+import discord.message
 import Python.BGG
 import Python.data_storage
 import Python.Dice
@@ -156,10 +156,10 @@ async def youtube_how_to_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command()
-async def schedule(ctx):
-    time_now = datetime.datetime.now()
-    await ctx.say(str(time_now))
+# @client.command()
+# async def schedule(ctx):
+#     time_now = datetime.datetime.now()
+#     await ctx.say(str(time_now))
 
 
 @client.command(name='GetHotGames',
@@ -194,25 +194,6 @@ async def get_hot_companies_error(ctx, error):
         await ctx.send('Unexpected error, try again. If the error persists,'
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
-
-# @client.command(name='AskQuestion',
-                # description="Returns a search of Stack Exchange similar questions",
-                # brief="Returns a search of Stack Exchange similar questions",
-                # aliases=['ask', 'ASK', 'question']
-                # )
-# async def ask(ctx, *, arg):
-    # user_input = arg.split(',')
-    # game = user_input[0]
-    # question = user_input[1]
-    # response = Python.BGG.search_stackexchange(game, question)
-    # await ctx.send(response)
-
-# @ask.error
-# async def ask_error(ctx, error):
-    # if isinstance(error, BaseException):
-        # await ctx.send('Unexpected error, try again. If the error persists,'
-                       # ' get help here https://discord.gg/9pS2JdC')
-        # logger.error(error, exc_info=True)
 
 @client.command(name='Lookup_BGG_User',
                 description='Lookup BGG user',
@@ -289,10 +270,15 @@ async def next_video_error(ctx, error):
 
 @client.command(name='help',
                 description='Bot purpose, and list of commands',
-                brief='Help',
+                brief='Help info',
                 aliases=['hlp', 'H', '?']
                 )
 async def help(ctx):
+    # helptext = "" #"```"
+    # for command in client.commands:
+    #     helptext +=f"{command}\n"
+    #     # helptext += "```"
+    # await ctx.send(helptext)
     helpfile = discord.Embed(title="Marvin",
                               description="The Depressed Robot"
                                           "\n Here is a list of things I can do, but I wont be happy about:",
@@ -303,6 +289,11 @@ async def help(ctx):
 
 @client.event
 async def on_ready():
+    for guild in client.guilds:
+        for channel in guild.channels:
+            if str(channel.type) == 'text' and str(channel.name) == 'general':
+                message = client.get_guild(guild.id).get_channel(channel.id)
+                await message.send('ready to go')
     print('Ready!')
 
 async def list_servers():
@@ -310,8 +301,8 @@ async def list_servers():
     while not client.is_closed():
         print("Current servers:")
         for guild in client.guilds:
-            print(guild.name)
-        await client.change_presence(activity= discord.Game(name=Python.BGG.random_owned_game("myersvx")))
+            print(f'{guild.name} \nID: {guild.id}')
+        await client.change_presence(activity=discord.Game(name=Python.BGG.random_owned_game("myersvx")))
         await asyncio.sleep(600)
 
 
