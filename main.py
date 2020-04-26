@@ -5,8 +5,6 @@ import os
 import random
 import typing
 import logging
-
-import discord.ext.commands
 import discord.message
 import Python.BGG
 import Python.data_storage
@@ -14,6 +12,8 @@ import Python.Dice
 import Python.YouTube
 import util.database_initialization
 from util.config import TOKEN
+from discord.ext import commands
+
 #from util.config import DEVELOPER_KEY
 
 # if not os.path.isfile('boardgamebot.db'):
@@ -26,17 +26,19 @@ logging.basicConfig(stream=lf, level=logging.DEBUG)
 
 logger = logging.Logger('catch_all')
 
-Bot_Prefix = (".")
+def get_prefix(client, message):
+    Bot_Prefix = ['==', '=']
+    return commands.when_mentioned_or(*Bot_Prefix)(client, message)
 
-players = {}
+#players = {}
 
-client = discord.ext.commands.Bot(command_prefix=Bot_Prefix)
-client.remove_command('help')
+client = commands.Bot(command_prefix=get_prefix, help_command=None, case_insensitive=True)
+#client.remove_command('help')
 
 
-@client.command(name='BGGCheck',
+@client.command(name='BoardGameGeek Lookup',
                 description="Returns the BGG information on a game",
-                brief="Returns the Board Game Geek information of a game",
+                brief="Shows the BoardGameGeek information of a game",
                 aliases=['bggck', 'bglookup', 'bg']
                 )
 async def bgg_check(ctx, *, gamename):
@@ -165,7 +167,7 @@ async def youtube_how_to_error(ctx, error):
 @client.command(name='GetHotGames',
                 description="Returns BoardGameGeeks current hot games",
                 brief="Returns BoardGameGeeks current hot games",
-                aliases=['ghg', 'gethotgames','hot']
+                aliases=['ghg', 'hot', 'hotgames']
                 )
 async def get_hot_games(ctx):
     response = Python.BGG.hot_games()
@@ -182,7 +184,7 @@ async def get_hot_games_error(ctx, error):
 @client.command(name='GetHotCompanies',
                 description="Returns BoardGameGeeks current hot board game companies",
                 brief="Returns BoardGameGeeks current hot board game companies",
-                aliases=['ghc', 'gethotcompanies']
+                aliases=['ghc', 'hotcompanies']
                 )
 async def get_hot_companies(ctx):
     response = Python.BGG.hot_companies()
@@ -274,17 +276,17 @@ async def next_video_error(ctx, error):
                 aliases=['hlp', 'H', '?']
                 )
 async def help(ctx):
-    # helptext = "" #"```"
-    # for command in client.commands:
-    #     helptext +=f"{command}\n"
-    #     # helptext += "```"
-    # await ctx.send(helptext)
+    helptext = ""
+
     helpfile = discord.Embed(title="Marvin",
                               description="The Depressed Robot"
                                           "\n Here is a list of things I can do, but I wont be happy about:",
                               color=0x6300D2)
-    helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
-    await ctx.send(embed=helpfile)
+    for command in client.commands:
+        helptext += f"{command}\n"
+    await ctx.send(helptext)
+    # helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
+    # await ctx.send(embed=helpfile)
 
 
 @client.event
@@ -293,7 +295,7 @@ async def on_ready():
         for channel in guild.channels:
             if str(channel.type) == 'text' and str(channel.name) == 'general':
                 message = client.get_guild(guild.id).get_channel(channel.id)
-                await message.send('ready to go')
+                await message.send('Life? Dont talk to me about Life')
     print('Ready!')
 
 async def list_servers():
