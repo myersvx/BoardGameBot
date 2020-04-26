@@ -101,7 +101,7 @@ async def random_game_error(ctx, error):
 
 @client.command(name='Random Owned Game',
                 description="Returns a random game title from a user's owned list",
-                brief="Random game from users BGG 0000000000000000000000000000000001475541O0wned list",
+                brief="Random game from users BGG owned list",
                 aliases=['randomownedpick', 'randobg', 'robg']
                 )
 async def random_users_game(ctx, name):
@@ -267,32 +267,22 @@ async def next_video_error(ctx, error):
                 brief='Help info',
                 aliases=['hlp', 'H', '?']
                 )
-async def help(ctx, *, cmnd):
+async def help(ctx, *, cmd=None):
         """Gives you info on bot's Commands."""
-        if not cmnd:
+        if not cmd:
             halp = discord.Embed(title="Marvin",
                                  description="The Depressed Robot"
                                              "\n Here is a list of things I can do, but I wont be happy about:",
                                  color=0x6300D2)
-            halp.add_field(name='Command Listing',value="Use '=help *command* for more information on a command", inline=True)
             for x in client.commands:
                 halp.add_field(name=x.name, value=f'{x.brief}', inline=False)
+            halp.set_footer(text='For more detailed information about a command use =help *command*')
         else:
-            halp = discord.Embed(title=f'{str(cmnd)} Command Listing')
+            halp = discord.Embed(title=f'{str(cmd)} Command Listing')
             for x in client.commands:
-                if str(cmnd).casefold() == str(x.name).casefold():
+                if str(cmd).casefold() == str(x.name).casefold():
                     halp.add_field(name=x.name, value=x.description, inline=False)
         await ctx.send(embed=halp)
-    # helptext = ""
-    # helpfile = discord.Embed(title="Marvin",
-    #                           description="The Depressed Robot"
-    #                                       "\n Here is a list of things I can do, but I wont be happy about:",
-    #                           color=0x6300D2)
-    # for command in client.commands:
-    #     helptext += f"{command}\n"
-    # await ctx.send(helptext)
-    # # helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
-    # await ctx.send(embed=helpfile)
 
 
 @client.event
