@@ -65,7 +65,7 @@ async def bgg_check_error(ctx, error):
         logger.error(error, exc_info=True)
 
 
-@client.command(name='Expansion_Check',
+@client.command(name='Expansion Check',
                 description="Returns expansions for the selected game if any",
                 brief="Returns expansions of a game",
                 aliases=['exp', 'expchk', 'expansion']
@@ -82,7 +82,7 @@ async def expansion_check_error(ctx, error):
         logger.error(error, exc_info=True)
 
 
-@client.command(name='Random_Game',
+@client.command(name='Random Game',
                 description="Returns a random game title from a provided list",
                 brief="Returns a random title from a provided list of games",
                 aliases=['randompick', 'randbg', 'rbg']
@@ -99,11 +99,9 @@ async def random_game_error(ctx, error):
         logger.error(error, exc_info=True)
 
 
-@client.command(name='Random_Owned_Game',
-                description="Returns a random game title from a user's owned \
-                    list",
-                brief="Returns a random title from a user's owned list of \
-                    games",
+@client.command(name='Random Owned Game',
+                description="Returns a random game title from a user's owned list",
+                brief="Random game from users BGG 0000000000000000000000000000000001475541O0wned list",
                 aliases=['randomownedpick', 'randobg', 'robg']
                 )
 async def random_users_game(ctx, name):
@@ -117,7 +115,7 @@ async def random_users_game_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name='What_Game_Can_We_Play',
+@client.command(name='What Can We Play',
                 description="Looks up a user's collection and how many people are playing to see what games you could play",
                 brief="Looks up a user's collection and how many people are playing to see what games you could play",
                 aliases=['wgcwp', 'wcwp', 'whatcanweplay']
@@ -142,7 +140,7 @@ async def what_game_can_we_play_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name='HowToPlay',
+@client.command(name='How To Play',
                 description="Returns the top search result video from YouTube on how to play",
                 brief="How to play video",
                 aliases=['htp', 'how', 'video']
@@ -158,13 +156,7 @@ async def youtube_how_to_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-# @client.command()
-# async def schedule(ctx):
-#     time_now = datetime.datetime.now()
-#     await ctx.say(str(time_now))
-
-
-@client.command(name='GetHotGames',
+@client.command(name='Get Hot Games',
                 description="Returns BoardGameGeeks current hot games",
                 brief="Returns BoardGameGeeks current hot games",
                 aliases=['ghg', 'hot', 'hotgames']
@@ -181,7 +173,7 @@ async def get_hot_games_error(ctx, error):
         logger.error(error, exc_info=True)
 
 
-@client.command(name='GetHotCompanies',
+@client.command(name='Get Hot Companies',
                 description="Returns BoardGameGeeks current hot board game companies",
                 brief="Returns BoardGameGeeks current hot board game companies",
                 aliases=['ghc', 'hotcompanies']
@@ -197,7 +189,7 @@ async def get_hot_companies_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name='Lookup_BGG_User',
+@client.command(name='Lookup BGG User',
                 description='Lookup BGG user',
                 brief="lookup bgg user",
                 aliases=['gamesowned', 'lookup-games', 'go']
@@ -220,7 +212,7 @@ async def lookup_bgg_user_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name="Dice_Roll",
+@client.command(name="Dice Roll",
                 description="Returns the value of a dice roll number is specified by command",
                 brief="Returns the value of a dice roll",
                 aliases=['dice']
@@ -237,7 +229,7 @@ async def dice_roll_error(ctx, error):
         logger.error(error, exc_info=True)
 
 
-@client.command(name='Game_Ambiance',
+@client.command(name='Game Ambiance',
                 description="Returns the top search result video from YouTube",
                 brief="Ambiance video",
                 aliases=['amb', 'ambiance']
@@ -254,7 +246,7 @@ async def game_ambiance_playlist_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name='Next_Video',
+@client.command(name='Next Video',
                 description="Returns the next video in the last youtube search",
                 brief="Return next video",
                 aliases=['nextvid', 'nxt', 'nvideo']
@@ -270,22 +262,36 @@ async def next_video_error(ctx, error):
                        ' get help here https://discord.gg/9pS2JdC')
         logger.error(error, exc_info=True)
 
-@client.command(name='help',
+@client.command(name='Help',
                 description='Bot purpose, and list of commands',
                 brief='Help info',
                 aliases=['hlp', 'H', '?']
                 )
-async def help(ctx):
-    helptext = ""
-
-    helpfile = discord.Embed(title="Marvin",
-                              description="The Depressed Robot"
-                                          "\n Here is a list of things I can do, but I wont be happy about:",
-                              color=0x6300D2)
-    for command in client.commands:
-        helptext += f"{command}\n"
-    await ctx.send(helptext)
-    # helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
+async def help(ctx, *, cmnd):
+        """Gives you info on bot's Commands."""
+        if not cmnd:
+            halp = discord.Embed(title="Marvin",
+                                 description="The Depressed Robot"
+                                             "\n Here is a list of things I can do, but I wont be happy about:",
+                                 color=0x6300D2)
+            halp.add_field(name='Command Listing',value="Use '=help *command* for more information on a command", inline=True)
+            for x in client.commands:
+                halp.add_field(name=x.name, value=f'{x.brief}', inline=False)
+        else:
+            halp = discord.Embed(title=f'{str(cmnd)} Command Listing')
+            for x in client.commands:
+                if str(cmnd).casefold() == str(x.name).casefold():
+                    halp.add_field(name=x.name, value=x.description, inline=False)
+        await ctx.send(embed=halp)
+    # helptext = ""
+    # helpfile = discord.Embed(title="Marvin",
+    #                           description="The Depressed Robot"
+    #                                       "\n Here is a list of things I can do, but I wont be happy about:",
+    #                           color=0x6300D2)
+    # for command in client.commands:
+    #     helptext += f"{command}\n"
+    # await ctx.send(helptext)
+    # # helpfile.add_field(name=".BGGCheck, .bglookup, or .bg followed by game_name", value="Looks up the BoardGameGeek entry of the game_name supplied", inline=False)
     # await ctx.send(embed=helpfile)
 
 
