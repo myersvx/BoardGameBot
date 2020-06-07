@@ -39,7 +39,7 @@ client = commands.Bot(command_prefix=get_prefix, help_command=None, case_insensi
 @client.command(name='BoardGameGeek Lookup',
                 description="Returns the BGG information on a game",
                 brief="Shows the BoardGameGeek information of a game",
-                aliases=['bggck', 'bglookup', 'bg']
+                aliases=['bggck', 'bglookup', 'bg', 'bgg']
                 )
 async def bgg_check(ctx, *, gamename):
     (main_response, title_text, image_url, link_url) = Python.BGG.game_lookup(gamename)
@@ -290,8 +290,8 @@ async def on_ready():
     for guild in client.guilds:
         for channel in guild.channels:
             if str(channel.type) == 'text' and str(channel.name) == 'general':
-                message = client.get_guild(guild.id).get_channel(channel.id)
-                await message.send('Life? Dont talk to me about Life')
+                # message = client.get_guild(guild.id).get_channel(channel.id)
+                # await message.send('Life? Dont talk to me about Life')
     print('Ready!')
 
 async def list_servers():
