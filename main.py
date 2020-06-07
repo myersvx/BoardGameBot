@@ -25,6 +25,7 @@ lf=open("log.txt", mode='w', encoding='utf_8')
 logging.basicConfig(stream=lf, level=logging.DEBUG)
 
 logger = logging.Logger('catch_all')
+new_line = '\n'
 
 def get_prefix(client, message):
     Bot_Prefix = ['==', '=']
@@ -38,7 +39,8 @@ client = commands.Bot(command_prefix=get_prefix, help_command=None, case_insensi
 
 @client.command(name='BoardGameGeek Lookup',
                 description="Returns the BGG information on a game",
-                brief="Shows the BoardGameGeek information of a game",
+                brief="Shows the BoardGameGeek information of the specified game",
+                usage="<game name>",
                 aliases=['bggck', 'bglookup', 'bg', 'bgg']
                 )
 async def bgg_check(ctx, *, gamename):
@@ -68,6 +70,7 @@ async def bgg_check_error(ctx, error):
 @client.command(name='Expansion Check',
                 description="Returns expansions for the selected game if any",
                 brief="Returns expansions of a game",
+                usage="=command <game name>",
                 aliases=['exp', 'expchk', 'expansion']
                 )
 async def expansion_check(ctx, *, game):
@@ -85,6 +88,7 @@ async def expansion_check_error(ctx, error):
 @client.command(name='Random Game',
                 description="Returns a random game title from a provided list",
                 brief="Returns a random title from a provided list of games",
+                usage="<game 1>, <game 2>, <game 3>, ...",
                 aliases=['randompick', 'randbg', 'rbg']
                 )
 async def random_game(ctx, *, arg):
@@ -102,6 +106,7 @@ async def random_game_error(ctx, error):
 @client.command(name='Random Owned Game',
                 description="Returns a random game title from a user's owned list",
                 brief="Random game from users BGG owned list",
+                usage="<bgg username>",
                 aliases=['randomownedpick', 'randobg', 'robg']
                 )
 async def random_users_game(ctx, name):
@@ -118,6 +123,7 @@ async def random_users_game_error(ctx, error):
 @client.command(name='What Can We Play',
                 description="Looks up a user's collection and how many people are playing to see what games you could play",
                 brief="Looks up a user's collection and how many people are playing to see what games you could play",
+                usage="<bgg username> <number of players>",
                 aliases=['wgcwp', 'wcwp', 'whatcanweplay']
                 )
 async def what_game_can_we_play(ctx, *, arg):
@@ -143,6 +149,7 @@ async def what_game_can_we_play_error(ctx, error):
 @client.command(name='How To Play',
                 description="Returns the top search result video from YouTube on how to play",
                 brief="How to play video",
+                usage="<game name>",
                 aliases=['htp', 'how', 'video']
                 )
 async def youtube_how_to(ctx, *, game_name):
@@ -159,6 +166,7 @@ async def youtube_how_to_error(ctx, error):
 @client.command(name='Get Hot Games',
                 description="Returns BoardGameGeeks current hot games",
                 brief="Returns BoardGameGeeks current hot games",
+                usage="",
                 aliases=['ghg', 'hot', 'hotgames']
                 )
 async def get_hot_games(ctx):
@@ -176,6 +184,7 @@ async def get_hot_games_error(ctx, error):
 @client.command(name='Get Hot Companies',
                 description="Returns BoardGameGeeks current hot board game companies",
                 brief="Returns BoardGameGeeks current hot board game companies",
+                usage="",
                 aliases=['ghc', 'hotcompanies']
                 )
 async def get_hot_companies(ctx):
@@ -190,8 +199,9 @@ async def get_hot_companies_error(ctx, error):
         logger.error(error, exc_info=True)
 
 @client.command(name='Lookup BGG User',
-                description='Lookup BGG user',
-                brief="lookup bgg user",
+                description='Looks up the BoardGameGeek list of owned game for the specified username',
+                brief="lookup bgg username owned games list",
+                usage="<username>",
                 aliases=['gamesowned', 'lookup-games', 'go']
                 )
 async def lookup_bgg_user(ctx, name):
@@ -213,9 +223,10 @@ async def lookup_bgg_user_error(ctx, error):
         logger.error(error, exc_info=True)
 
 @client.command(name="Dice Roll",
-                description="Returns the value of a dice roll number is specified by command",
-                brief="Returns the value of a dice roll",
-                aliases=['dice']
+                description="Returns the value of a single die with user specified number of sides",
+                brief="Returns the value of a D<num> die roll",
+                usage="<# of sides>",
+                aliases=['dice', 'roll']
                 )
 async def dice_roll(ctx, sides):
     dice_roll = Python.Dice.dice(int(sides))
@@ -230,8 +241,9 @@ async def dice_roll_error(ctx, error):
 
 
 @client.command(name='Game Ambiance',
-                description="Returns the top search result video from YouTube",
-                brief="Ambiance video",
+                description="Returns the top YouTube search result for search of 'ambiance + <gamename>' ",
+                brief="Ambiance video for specified game",
+                usage="<gamename>",
                 aliases=['amb', 'ambiance']
                 )
 async def game_ambiance_playlist(ctx, *, topic):
@@ -247,8 +259,10 @@ async def game_ambiance_playlist_error(ctx, error):
         logger.error(error, exc_info=True)
 
 @client.command(name='Next Video',
-                description="Returns the next video in the last youtube search",
-                brief="Return next video",
+                description="Gives the next video in the list of results from the most recent youtube search done in "
+                            "discord chat",
+                brief="Next video in list from most recent search",
+                usage="",
                 aliases=['nextvid', 'nxt', 'nvideo']
                 )
 async def next_video(ctx):
@@ -265,6 +279,7 @@ async def next_video_error(ctx, error):
 @client.command(name='Help',
                 description='Bot purpose, and list of commands',
                 brief='Help info',
+                usage="<blank> or <command>",
                 aliases=['hlp', 'H', '?']
                 )
 async def help(ctx, *, cmd=None):
@@ -272,16 +287,18 @@ async def help(ctx, *, cmd=None):
         if not cmd:
             halp = discord.Embed(title="Marvin",
                                  description="The Depressed Robot"
-                                             "\n Here is a list of things I can do, but I wont be happy about:",
+                                             "\n Here is a list of things I can do, but I wont be happy about:"
+                                             "\n To use a command use '=command' ",
                                  color=0x6300D2)
             for x in client.commands:
-                halp.add_field(name=x.name, value=f'{x.brief}', inline=False)
-            halp.set_footer(text='For more detailed information about a command use =help *command*')
+                halp.add_field(name=x.name, value=f'{x.name}. {new_line} To use ={x.aliases} {x.usage} {new_line} {x.brief}', inline=False)
+            halp.set_footer(text='For more detailed information about a command use =help <command>')
         else:
             halp = discord.Embed(title=f'{str(cmd)} Command Listing')
             for x in client.commands:
-                if str(cmd).casefold() == str(x.name).casefold():
-                    halp.add_field(name=x.name, value=x.description, inline=False)
+                y = str(cmd).casefold()
+                if str(cmd).casefold() == str(x.name).casefold() or y in x.aliases:
+                    halp.add_field(name=x.name, value=f'{x.name}{new_line} To use ={x.aliases} {x.usage}{new_line}{x.description}', inline=False)
         await ctx.send(embed=halp)
 
 
